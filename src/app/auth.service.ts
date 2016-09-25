@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { tokenNotExpired } from 'angular2-jwt';
+import { AngularFire, AuthProviders, AuthMethods } from 'angularfire2';
+
 import { appConfig } from './app.config';
 
 
@@ -18,7 +20,7 @@ export class Auth {
   //Store profile object in auth class
   userProfile: Object;
 
-  constructor() {
+  constructor(private af: AngularFire) {
     // Set userProfile attribute of already saved profile
     this.userProfile = JSON.parse(localStorage.getItem('profile'));
 
@@ -50,12 +52,10 @@ export class Auth {
       // Make a call to the Auth0 '/delegate'
       this.auth0.getDelegationToken(options, function (err, result) {
         if (!err) {
-          console.log(result);
           // Exchange the delegate token for a Firebase auth token
-          firebase.auth().signInWithCustomToken(result.id_token).then((success) => {
-            console.log("Firebase success: " + JSON.stringify(success));
-          }).catch(function (error) {
-            console.log(error);
+          af.auth.login(result.id_token, {
+            provider: AuthProviders.Custom,
+            method: AuthMethods.CustomToken,
           });
         }
       });
@@ -78,11 +78,7 @@ export class Auth {
     // Remove token and profile from localStorage
     localStorage.removeItem('id_token');
     localStorage.removeItem('profile');
-    firebase.auth().signOut().then(function () {
-      console.log("Signout Successful")
-    }, function (error) {
-      console.log(error);
-    });
+    this.af.auth.logout();
     this.userProfile = undefined;
   };
 }
