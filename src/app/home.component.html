@@ -12,16 +12,16 @@
     </div>
   </div>
 
-  <section *ngIf="items">
+  <section *ngIf="fs.items">
     <h1>Items received from database</h1>
     <ul>
-      <li class="text" *ngFor="let item of items; let i = index">
-        {{i}}
+      <li class="text" *ngFor="let item of fs.items | async">
+        {{ item.$key }} : {{ item.$value }}
       </li>
     </ul>
   </section>
 
-  <h1 *ngIf="!items">Items not yet received from database</h1>
+  <h1 *ngIf="!fs.items">Items not yet received from database</h1>
 
 </div>
 <h4 *ngIf="!auth.authenticated()">You are not logged in, please click 'Log in' button to login</h4>
