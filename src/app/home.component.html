@@ -16,7 +16,7 @@
     <h1>Items received from database</h1>
     <ul>
       <li class="text" *ngFor="let item of fs.items | async">
-        {{ item.$key }} : {{ item.$value }}
+        {{ item.$key }}
       </li>
     </ul>
   </section>
