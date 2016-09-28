@@ -13,7 +13,7 @@ declare var firebase: any;
 @Injectable()
 export class Auth {
   // Configure Auth0
-  lock = new Auth0Lock(appConfig.auth0.clientID, appConfig.auth0.domain, {});
+  lock = new Auth0Lock(appConfig.auth0.clientID, appConfig.auth0.domain, { auth: { params: { scope: "openid scope" } } });
   auth0 = new Auth0({ clientID: appConfig.auth0.clientID, domain: appConfig.auth0.domain })
 
 
@@ -73,6 +73,11 @@ export class Auth {
     // It searches for an item in localStorage with key == 'id_token'
     return tokenNotExpired();
   };
+
+  public getAuthToken() {
+    // Return the Auth0 `id_token`
+    return localStorage.getItem('id_token');
+  }
 
   public logout() {
     // Remove token and profile from localStorage
